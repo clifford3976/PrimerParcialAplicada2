@@ -82,6 +82,7 @@
     <None Include="Scripts\jquery-1.6.3-vsdoc.js" />
     <Content Include="Imagenes\SAG.png" />
     <Content Include="Registros\Cuentas.aspx" />
+    <Content Include="Registros\Depositos.aspx" />
     <Content Include="Scripts\jquery-1.6.3.js" />
     <Content Include="Scripts\jquery-1.6.3.min.js" />
     <Content Include="Scripts\toastr.js" />
@@ -110,6 +111,13 @@
     </Compile>
     <Compile Include="Registros\Cuentas.aspx.designer.cs">
       <DependentUpon>Cuentas.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Registros\Depositos.aspx.cs">
+      <DependentUpon>Depositos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Registros\Depositos.aspx.designer.cs">
+      <DependentUpon>Depositos.aspx</DependentUpon>
     </Compile>
     <Compile Include="SiteMaster.Master.cs">
       <DependentUpon>SiteMaster.Master</DependentUpon>
