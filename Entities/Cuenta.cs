@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Entities
 {
-    public class Cuentas
+    public class Cuenta
     {
         [Key]
         public int CuentaID { get; set; }
@@ -15,7 +15,7 @@ namespace Entities
         public string Nombre { get; set; }
         public Decimal Balance { get; set; }
 
-        public Cuentas(int cuentaID, DateTime fecha, string nombre, decimal balance)
+        public Cuenta(int cuentaID, DateTime fecha, string nombre, decimal balance)
         {
             CuentaID = cuentaID;
             Fecha = fecha;
@@ -23,7 +23,7 @@ namespace Entities
             Balance = balance;
         }
 
-        public Cuentas()
+        public Cuenta()
         {
             CuentaID = 0;
             Fecha = DateTime.Now;

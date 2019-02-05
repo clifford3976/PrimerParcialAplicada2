@@ -61,8 +61,7 @@
                     <a class="nav-link dropdown-toggle" href="#" id="Registros" data-toggle="dropdown">Registros
                     </a>
                     <div class="dropdown-menu bg-success">
-                         <a class="dropdown-item" href=""></a>
-                        <a class="dropdown-item" href="#">Registro de Cuentas</a>
+                        <a class="dropdown-item" href="http://localhost:54638/Registros/Cuentas.aspx#">Registro de Cuentas</a>
                         <a class="dropdown-item" href="#">Registro de Depositos</a>
                     </div>
                 </li>
@@ -71,7 +70,6 @@
                     <a class="nav-link dropdown-toggle"  href="#" id="Consultas" data-toggle="dropdown">Consultas
                     </a>
                     <div class="dropdown-menu bg-success ">
-                         <a class="dropdown-item" href=""></a>
                         <a class="dropdown-item" href="#">Consulta Cuentas</a>
                         <a class="dropdown-item" href="#">Consulta Depositos</a>
                     </div>
