@@ -71,7 +71,7 @@
                     </a>
                     <div class="dropdown-menu bg-success ">
                         <a class="dropdown-item" href="http://localhost:54638/Consultas/Cuentas.aspx#">Consulta Cuentas</a>
-                        <a class="dropdown-item" href="#">Consulta Depositos</a>
+                        <a class="dropdown-item" href="http://localhost:54638/Consultas/Depositos.aspx#">Consulta Depositos</a>
                     </div>
                 </li>
                 
