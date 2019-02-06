@@ -11,19 +11,20 @@ namespace PrimerParcial.Registros
 {
     public partial class Cuentas : System.Web.UI.Page
     {
-        RepositorioBase<Cuentas> repositorio = new RepositorioBase<Cuentas>();
+        RepositorioBase<Cuenta> repositorio = new RepositorioBase<Cuenta>();
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!Page.IsPostBack)
             {
                 FechadateTime.Text = DateTime.Now.ToString("yyyy-MM-dd");
-
+                BalanceTexbox.Text = "0";
+                CuentaIDTextbox.Text = "0";
             }
         }
 
-        public Cuenta LlenaClase(Cuenta cuentas)
+        public Cuenta LlenaClase()
         {
-           
+            Cuenta cuentas = new Cuenta();
             int id;
             bool result = int.TryParse(CuentaIDTextbox.Text, out id);
             if (result == true)
@@ -36,7 +37,7 @@ namespace PrimerParcial.Registros
             }
 
             cuentas.Nombre = nombreTextbox.Text;
-            cuentas.Balance = Convert.ToDecimal(BalanceTextbox.Text.ToString());
+            cuentas.Balance = Convert.ToDecimal(BalanceTexbox.Text.ToString());
 
             return cuentas;
         }
@@ -45,7 +46,7 @@ namespace PrimerParcial.Registros
         {
             CuentaIDTextbox.Text = cuentas.CuentaID.ToString();
             nombreTextbox.Text = cuentas.Nombre;
-            BalanceTextbox.Text = cuentas.Balance.ToString();
+            BalanceTexbox.Text = cuentas.Balance.ToString();
 
 
         }
@@ -54,7 +55,7 @@ namespace PrimerParcial.Registros
         {
             CuentaIDTextbox.Text = "";
             nombreTextbox.Text = "";
-            BalanceTextbox.Text = "";
+            BalanceTexbox.Text = "";
 
         }
 
@@ -63,18 +64,70 @@ namespace PrimerParcial.Registros
 
         {
 
-            ErrorLabel1.Text = mensaje;
+            ErrorLabel.Text = mensaje;
 
             if (tipo == TiposMensajes.Success)
 
-                ErrorLabel1.CssClass = "alert-success";
+                ErrorLabel.CssClass = "alert-success";
 
             else
 
-                ErrorLabel1.CssClass = "alert-danger";
+                ErrorLabel.CssClass = "alert-danger";
 
         }
 
+        protected void NuevoButton_Click(object sender, EventArgs e)
+        {
+            Limpiar();
+        }
+
+        protected void GuardarButton_Click(object sender, EventArgs e)
+        {
+            RepositorioBase<Cuenta> repositorio = new RepositorioBase<Cuenta>();
+
+            Cuenta cuenta = LlenaClase();
+
+            bool paso = false;
+
+            if (Page.IsValid)
+            {
+                if (CuentaIDTextbox.Text == "0")
+                {
+                    paso = repositorio.Guardar(cuenta);
+
+                }
+
+
+                else
+                {
+                    var verificar = repositorio.Buscar(Utilities.Utils.ToInt(CuentaIDTextbox.Text));
+
+                    if (verificar != null)
+                    {
+                        paso = repositorio.Modificar(cuenta);
+                    }
+                    else
+                    {
+                        Utilities.Utils.ShowToastr(this, "Cuenta No Existo", "Fallido", "success");
+                        return;
+                    }
+                }
+
+                if (paso)
+
+                {
+                    Utilities.Utils.ShowToastr(this, "Cuenta Registrada", "Exito", "success");
+                }
+
+                else
+
+                {
+                    Utilities.Utils.ShowToastr(this, "No pudo Guardarse la cuenta", "Exito", "success");
+                }
+                Limpiar();
+                return;
+            }
+        }
 
         protected void EliminarButton_Click(object sender, EventArgs e)
         {
@@ -82,40 +135,32 @@ namespace PrimerParcial.Registros
 
 
 
-            int id = 0;
-            if (CuentaIDTextbox.Text != null)
+            int id = Utilities.Utils.ToInt(CuentaIDTextbox.Text);
+            var cuenta = repositorio.Buscar(id);
+
+
+            if (cuenta == null)
             {
-                id = Convert.ToInt32(CuentaIDTextbox.Text);
+                Utilities.Utils.ShowToastr(this, "No se puede Eliminar", "Fallido", "success");
+            }
+
+            //Si tiene algun prestamo o deposito enlazado no elimina
+            RepositorioBase<Deposito> repositorios = new RepositorioBase<Deposito>();
+
+            if (repositorios.GetList(x => x.CuentaID == id).Count() > 0)
+            {
+                Utilities.Utils.ShowToastr(this, "No se puede Eliminar, La cuenta contiene depositos", "contiene Depositos", "success");
+
             }
 
             else
-                return;
-            if (CuentaIDTextbox.Text != null)
             {
+                repositorio.Eliminar(id);
 
-                //Si tiene algun prestamo o deposito enlazado no elimina
-                RepositorioBase<Deposito> repositorios = new BLL.RepositorioBase<Deposito>();
-
-                if (repositorios.GetList(x => x.CuentaID == id).Count() > 0)
-                {
-                    MostrarMensaje(TiposMensajes.Error, "No Fue Posible Eliminardo, Clntiene Depositos en esa Cuenta");
-
-                }
-
-                var usuario = repositorio.Buscar(id);
-
-
-
-                if (usuario == null)
-
-                    MostrarMensaje(TiposMensajes.Error, "Registro no encontrado");
-
-                else
-
-                    repositorio.Eliminar(id);
+                Utilities.Utils.ShowToastr(this, "Cuenta a sido Eliminada", "Exito", "success");
+                Limpiar();
             }
         }
-
 
         protected void BuscarButton_Click(object sender, EventArgs e)
         {
@@ -129,40 +174,9 @@ namespace PrimerParcial.Registros
             }
             else
             {
-                Response.Write("<script>alert('Usuario no encontrado');</script>");
+                Utilities.Utils.ShowToastr(this, "Usuario no encontrado", "Fallido", "success");
 
             }
-        }
-
-        protected void NuevoButton_Click(object sender, EventArgs e)
-        {
-            Limpiar();
-        }
-
-        protected void GuardarButton_Click(object sender, EventArgs e)
-        {
-            RepositorioBase<Cuenta> repositorio = new RepositorioBase<Cuenta>();
-            Cuenta cuentas = new Cuenta();
-            bool paso = false;
-
-            LlenaClase(cuentas);
-            //Validacion
-            if (cuentas.CuentaID == 0)
-
-                paso = repositorio.Guardar(cuentas);
-            else
-                paso = repositorio.Modificar(cuentas);
-            if (paso)
-
-            {
-                MostrarMensaje(TiposMensajes.Success, "Registro Exitoso!");
-                Limpiar();
-
-            }
-            else
-                MostrarMensaje(TiposMensajes.Error, "No fue posible Guardar el Registro");
-
-            Limpiar();
         }
     }
 }

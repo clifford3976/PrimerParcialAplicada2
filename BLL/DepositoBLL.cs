@@ -2,6 +2,7 @@
 using Entities;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,18 +15,26 @@ namespace BLL
         {
             bool paso = false;
             Contexto contexto = new Contexto();
+
             try
             {
-                contexto.Cuenta.Find(entity.CuentaID).Balance += entity.Monto;
-                contexto.Depositos.Add(entity);
-                if (contexto.SaveChanges() > 0)
+
+                if (contexto.Depositos.Add(entity) != null)
+                {
+
+                    var cuenta = contexto.Cuenta.Find(entity.CuentaID);
+                    //Incrementar el balance
+                    cuenta.Balance += entity.Monto;
+
+
+                    contexto.SaveChanges();
                     paso = true;
+                }
+                contexto.Dispose();
 
             }
-            catch (Exception)
-            {
-                throw;
-            }
+            catch (Exception) { throw; }
+
             return paso;
         }
 
@@ -36,49 +45,77 @@ namespace BLL
 
             try
             {
-                var Deposito = contexto.Depositos.Find(id);
-                contexto.Cuenta.Find(Deposito.CuentaID).Balance -= Deposito.Monto;
-                contexto.Entry(Deposito).State = System.Data.Entity.EntityState.Deleted;
+                Deposito depositos = contexto.Depositos.Find(id);
+
+                if (depositos != null)
+                {
+                    var cuenta = contexto.Cuenta.Find(depositos.CuentaID);
+                    //Incrementar la cantidad
+                    cuenta.Balance -= depositos.Monto;
+
+                    contexto.Entry(depositos).State = EntityState.Deleted;
+
+                }
+
                 if (contexto.SaveChanges() > 0)
+                {
                     paso = true;
+                    contexto.Dispose();
+                }
+
+
             }
             catch (Exception)
             {
-
                 throw;
             }
+
             return paso;
         }
 
 
         public override bool Modificar(Deposito entity)
         {
-            var BaseDatos = base.Buscar(entity.DepositoID);
-
             bool paso = false;
             Contexto contexto = new Contexto();
+            RepositorioBase<Deposito> repositorio = new RepositorioBase<Deposito>();
             try
             {
 
-                contexto.Cuenta.Find(entity.CuentaID).Balance -= BaseDatos.Monto;
-                contexto.Cuenta.Find(entity.CuentaID).Balance += entity.Monto;
+                //Buscar
 
-                contexto.Entry(entity).State = System.Data.Entity.EntityState.Modified;
+                var depositosanterior = repositorio.Buscar(entity.DepositoID);
+
+                var Cuenta = contexto.Cuenta.Find(entity.CuentaID);
+                var Cuentasanterior = contexto.Cuenta.Find(depositosanterior.CuentaID);
+
+                if (entity.CuentaID != depositosanterior.CuentaID)
+                {
+                    Cuenta.Balance += entity.Monto;
+                    Cuentasanterior.Balance -= depositosanterior.Monto;
+                }
+
+
+
+                //identificar la diferencia ya sea restada o sumada
+                decimal diferencia;
+                diferencia = entity.Monto - depositosanterior.Monto;
+
+
+
+                //aplicar diferencia al inventario 
+                Cuenta.Balance += diferencia;
+
+                contexto.Entry(entity).State = EntityState.Modified;
 
                 if (contexto.SaveChanges() > 0)
+                {
                     paso = true;
-
-                contexto.Cuenta.Find(entity.CuentaID).Balance -= entity.Monto;
-
+                }
+                contexto.Dispose();
 
             }
-            catch (Exception)
-            {
-
-                throw;
-            }
-
-
+            catch (Exception) { throw; }
 
             return paso;
         }

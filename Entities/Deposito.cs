@@ -31,7 +31,6 @@ namespace Entities
             Fecha = DateTime.Now;
             CuentaID = 0;
             Concepto = string.Empty;
-            Concepto = string.Empty;
             Monto = 0;
         }
     }
