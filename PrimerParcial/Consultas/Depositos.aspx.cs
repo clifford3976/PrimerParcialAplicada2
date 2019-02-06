@@ -14,6 +14,7 @@ namespace PrimerParcial.Consultas
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+
             if (!Page.IsPostBack)
             {
 
@@ -22,13 +23,14 @@ namespace PrimerParcial.Consultas
             }
         }
 
-
         RepositorioBase<Deposito> repositorio = new RepositorioBase<Deposito>();
         bool paso = false;
         Expression<Func<Deposito, bool>> filtrar = x => true;
 
+
         protected void ButtonBuscar_Click1(object sender, EventArgs e)
         {
+
             var DesdeDateTime = Convert.ToDateTime(DesdeTextBox.Text);
             var HastaDateTime = Convert.ToDateTime(HastaTextBox.Text);
             int id = 0;

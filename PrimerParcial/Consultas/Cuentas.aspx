@@ -77,7 +77,7 @@
 
 
                     </Columns>
-                    <HeaderStyle BackColor="Red" Font-Bold="True" />
+                    <HeaderStyle BackColor="red" Font-Bold="True" />
                 </asp:GridView>
             </div>
         </div>
