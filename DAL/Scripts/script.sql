@@ -1,3 +1,3 @@
-create database ControlBancarioDb
+create database PrimerParcialDb
 Go
-use ControlBancarioDb
+use PrimerParcialDb
