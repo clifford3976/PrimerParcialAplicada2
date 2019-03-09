@@ -64,6 +64,7 @@
                     <div class="dropdown-menu bg-success">
                         <a class="dropdown-item" href="http://localhost:54638/Registros/Cuentas.aspx#">Registro de Cuentas</a>
                         <a class="dropdown-item" href="http://localhost:54638/Registros/Depositos.aspx#">Registro de Depositos</a>
+                        <a class="dropdown-item" href="http://localhost:54638/Registros/Prestamos.aspx#">Registro de Prestamos</a>
                     </div>
                 </li>
 
@@ -75,6 +76,8 @@
                         <a class="dropdown-item" href="http://localhost:54638/Consultas/Depositos.aspx#">Consulta Depositos</a>
                     </div>
                 </li>
+
+
                 
                 </ul>
                
